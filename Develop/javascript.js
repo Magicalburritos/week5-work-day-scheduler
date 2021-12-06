@@ -1,31 +1,50 @@
 // global vars selectors
-var taskItems = [];
-// local storage var
-$('#currentDay').html(moment().format('dddd MMM Do'));
+var currentTime;
+var displayTime = function () {
+  currentTime = moment().format('HH');
+};
 // btn save on click to localstorage
-
+$('#currentDay').html(moment().format('dddd MMM Do'));
 var saveTasks = function (tasks, id) {
   localStorage.setItem(id, JSON.stringify(tasks));
-  console.log(document.getElementById('d1').value);
 };
 $('i').on('click', function () {
   var id = $(this).attr('id');
   var task = $(this).parent().prev('.col-lg-8').children('input').val();
 
   saveTasks(task, id);
-  console.log(localStorage.getItem('tasks'));
 });
 // time change color
+var changeColors = function () {
+  for (let i = 9; i <= 17; i++) {
+    var input = $('#d' + i);
+    if (currentTime > i) {
+      input.addClass('past');
+    }
+    if (currentTime === i) {
+      input.addClass('present');
+    }
+    if (currentTime < i) {
+      input.addClass('future');
+    }
+  }
+};
 
 var loadTasks = function () {
-  for (let i = 1; i <= 9; i++) {
-    console.log(i);
+  for (let i = 9; i <= 17; i++) {
     document.getElementById('d' + i).value = JSON.parse(
       localStorage.getItem(i)
     );
-    console.log(localStorage.getItem(i));
   }
-  console.log(localStorage.getItem('tasks'));
 };
 
 loadTasks();
+
+$(document).ready(function () {
+  displayTime();
+  changeColors();
+  window.setInterval(function () {
+    displayTime();
+    changeColors();
+  }, 1000);
+});
